@@ -88,16 +88,24 @@ export const Card = (props: CardProps) => {
           </Text>
         </Stack>
       </CardBody>
-      <CardFooter display="flex" alignItems="center" justifyContent="flex-end">
-        <ButtonGroup spacing="2">
+      <CardFooter
+        display="flex"
+        alignItems="center"
+        justifyContent="flex-end"
+        p="0"
+        pb="4"
+      >
+        <ButtonGroup spacing="2" mr="2">
           {/* TODO: Change the colors of the icons, it should come from the theme */}
           <IconButton
             variant="link"
+            fontSize="24"
             aria-label="Search database"
             icon={<GoShareAndroid color="red" />}
           />
           <IconButton
             variant="link"
+            fontSize="24"
             aria-label="Search database"
             icon={<GoBookmark color="red" />}
           />

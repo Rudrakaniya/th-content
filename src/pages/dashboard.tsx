@@ -1,21 +1,66 @@
-import { Card } from "../components";
+import { useState, useEffect } from "react";
+import { Card, CardSkeleton } from "../components";
+import { Header } from "../components/Header";
+import { SimpleGrid } from "@chakra-ui/react";
+import { useQuery, gql } from "@apollo/client";
+import { CONTENT_QUERY } from "../graphql/queries/contentQuery";
 
 export const Dashboard = () => {
-  const cardProps = {
-    imageSrc:
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-    imageAlt: "Green double couch with wooden legs",
-    percentageOfContentCompleted: 80,
-    contentLength: "30m",
-    subtitle: "COMMUNICATING AS A LEADER",
-    title: "Peak Performance: Going From Good to Great with Simon Taudel",
-    expertName: "Jane Doe",
-    category: "Subway APAC",
+  const [searchResults, setSearchResults] = useState<any>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { loading, error, data } = useQuery(CONTENT_QUERY, {
+    variables: { query: searchQuery },
+  });
+  console.log("data: ", data?.contentCards?.edges);
+
+  useEffect(() => {
+    setSearchResults(data?.contentCards?.edges || []);
+  }, [data]);
+
+  const handleSearch = (query: string) => {
+    console.log("query: ", query);
+    setSearchQuery(query);
+    setSearchResults([]);
   };
   return (
     <div>
-      <div>dashboard</div>
-      <Card {...cardProps} />
+      <Header onSearch={handleSearch} />
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4} p={4}>
+        {loading ? (
+          <>
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </>
+        ) : searchResults.length > 0 ? (
+          searchResults.map((result: any, index: number) => (
+            <Card
+              key={index}
+              title={result.name}
+              expertName="Jane Doe"
+              category={result.categories[0].name}
+              imageSrc={result.image.uri}
+              imageAlt={result.name}
+              percentageOfContentCompleted={60}
+              contentLength="30m"
+              subtitle={result.categories[0].name}
+            />
+          ))
+        ) : (
+          <Card
+            title={searchResults[0]?.name}
+            expertName="Jane Doe"
+            category={searchResults[0]?.categories[0].name}
+            imageSrc={searchResults[0]?.image.uri}
+            imageAlt={searchResults[0]?.name}
+            percentageOfContentCompleted={60}
+            contentLength="30m"
+            subtitle={searchResults[0]?.categories[0].name}
+          />
+        )}
+      </SimpleGrid>
     </div>
   );
 };
