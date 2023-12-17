@@ -36,18 +36,13 @@ export const Dashboard = () => {
   }, [data]);
 
   const handleSearch = (query: string) => {
-    console.log("query: ", query);
     setSearchQuery(query);
     setSearchResults([]);
   };
   return (
     <Box backgroundColor={colors.black[900]} minHeight="100vh">
       <Header onSearch={handleSearch} />
-      <SimpleGrid
-        columns={{ base: 1, md: 2, lg: 4 }}
-        spacing={4}
-        p={4}
-      >
+      <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={4} p={4}>
         {loading ? (
           <>
             {Array.from({ length: 8 }, (_, index) => (
@@ -72,6 +67,11 @@ export const Dashboard = () => {
         ) : (
           <Text color="white">No Results found</Text>
         )}
+        {error ? (
+          <Text color="white">
+            We have encountered some error, Please try again.
+          </Text>
+        ) : null}
       </SimpleGrid>
       <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
